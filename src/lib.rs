@@ -129,7 +129,7 @@ impl State {
     /// This function will return a `TxError` if various checks fail. If an error is returned, you
     /// can safely assume that no account data has been modified.
     pub fn execute(&mut self, tx: Transaction) -> Result<(), TxError> {
-        // negative amounts are now allowed as they can flip balances.
+        // negative amounts are not allowed as they can flip balances.
         if matches!(tx.tx_type, TransactionType::Deposit { amount } | TransactionType::Withdrawal { amount } if amount < 0.0)
         {
             return Err(TxError::InternalError);
@@ -139,6 +139,12 @@ impl State {
             id: tx.client,
             ..Account::default()
         });
+
+        // NOTE (assumption): if an account gets locked, we probably want to ignore all future txs
+        // from them until the account is manually unlocked.
+        if account.locked {
+            return Err(TxError::AccountLocked);
+        }
 
         match tx.tx_type {
             TransactionType::Deposit { amount } => {
@@ -459,7 +465,7 @@ pub mod test {
                 client: 1,
                 tx: 1,
             }),
-            Err(TxError::TxDoesntExist)
+            Err(TxError::AccountLocked)
         );
     }
 
@@ -671,5 +677,42 @@ pub mod test {
         assert_eq!(account.total, -120.0);
         assert_eq!(account.held, 0.0);
         assert_eq!(account.available, -120.0);
+    }
+
+    #[test]
+    fn test_account_lock() {
+        let mut state = State::default();
+        state
+            .execute(Transaction {
+                tx_type: TransactionType::Deposit { amount: 120.0 },
+                client: 1,
+                tx: 1,
+            })
+            .unwrap();
+
+        state
+            .execute(Transaction {
+                tx_type: TransactionType::Dispute,
+                client: 1,
+                tx: 1,
+            })
+            .unwrap();
+
+        state
+            .execute(Transaction {
+                tx_type: TransactionType::Chargeback,
+                client: 1,
+                tx: 1,
+            })
+            .unwrap();
+
+        assert_eq!(
+            state.execute(Transaction {
+                tx_type: TransactionType::Deposit { amount: 120.0 },
+                client: 1,
+                tx: 1,
+            }),
+            Err(TxError::AccountLocked)
+        );
     }
 }

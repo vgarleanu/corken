@@ -14,4 +14,6 @@ pub enum TxError {
     TxNotUnderDispute,
     #[error("Internal math error.")]
     InternalError,
+    #[error("Account is locked.")]
+    AccountLocked,
 }
