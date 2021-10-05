@@ -262,7 +262,7 @@ impl State {
         }
 
         // NOTE: Sanity check
-        debug_assert!(account.total == account.held + account.available);
+        debug_assert!((account.total - (account.held + account.available)).abs() < f64::EPSILON);
 
         Ok(())
     }
