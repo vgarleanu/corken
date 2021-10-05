@@ -260,6 +260,9 @@ impl State {
             self.tx_cache.insert(tx.tx, (tx, None));
         }
 
+        // NOTE: Sanity check
+        debug_assert!(account.total == account.held + account.available);
+
         Ok(())
     }
 
