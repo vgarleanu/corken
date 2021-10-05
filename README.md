@@ -2,13 +2,13 @@
 Corken is a payments engine able to replay transactions from a csv file, outputting all the final account states from the engine.
 
 ## Features
-[x] Withdrawals
-[x] Deposits
-[ ] Disputes
-    [x] Deposit disputes
-    [ ] Withdrawal disputes
-[x] Dispute resolution
-[x] Chargebacks
+1. [x] Withdrawals
+2. [x] Deposits
+3. [ ] Disputes
+    1. [x] Deposit disputes
+    2. [ ] Withdrawal disputes
+4. [x] Dispute resolution
+5. [x] Chargebacks
 
 ## Running (from source)
 Corken has no external dependencies and will compile on rustc nightly, as well as stable.
