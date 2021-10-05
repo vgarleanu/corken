@@ -11,7 +11,7 @@ Corken is a payments engine able to replay transactions from a csv file, outputt
 5. [x] Chargebacks
 
 ## Running (from source)
-Corken has no external dependencies and will compile on rustc nightly, as well as stable.
+Corken has no external dependencies and will compile on rustc nightly (2021-09-07).
   1. `git clone https://github.com/vgarleanu/corken`
   2. `cd corken && cargo run --release -- transactions.csv`
 

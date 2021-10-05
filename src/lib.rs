@@ -1,3 +1,4 @@
+#![doc = include_str!("../README.md")]
 /// Errors returned by the state machine.
 pub mod error;
 /// Contains some trait impls necessary for generating random transactions for benchmarking.
